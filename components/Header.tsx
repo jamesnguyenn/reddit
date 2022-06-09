@@ -19,8 +19,11 @@ import {
 } from '@heroicons/react/solid';
 
 import Image from '../node_modules/next/image';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 function Header() {
+    const { data: session } = useSession();
+
     return (
         <div className="sticky top-0 z-50 flex bg-white px-4 py-2 shadow-sm">
             <div className="relative h-10 w-20 flex-shrink-0 cursor-pointer">
@@ -28,6 +31,7 @@ function Header() {
                     src="https://links.papareact.com/fqy"
                     layout="fill"
                     objectFit="contain"
+                    alt="logo"
                 />
             </div>
             <div className="flex items-center mx-7 xl:min-w-[300px] ">
@@ -59,16 +63,39 @@ function Header() {
                 <MenuIcon className="icon" />
             </div>
             {/* Sign in/ Sign out button */}
-            <div className="hidden lg:flex items-center space-x-2 border border-gray-100 p-2 cursor-pointer">
-                <div className="relative h-5 w-5 flex-shrink-0">
-                    <Image
-                        src="https://links.papareact.com/23l"
-                        alt=""
-                        layout="fill"
-                    />
+            {session ? (
+                <div
+                    className="hidden lg:flex items-center space-x-2 border border-gray-100 p-2 cursor-pointer"
+                    onClick={() => signOut()}
+                >
+                    <div className="relative h-5 w-5 flex-shrink-0">
+                        <Image
+                            src="https://links.papareact.com/23l"
+                            alt=""
+                            layout="fill"
+                        />
+                    </div>
+                    <div className="flex-1 text-sm">
+                        <p className="truncate">{session?.user?.name}</p>
+                        <p className="text-gray-400">1 Karma</p>
+                    </div>
+                    <ChevronDownIcon className="h-5 flex-shrink-0 text-gray-400" />
                 </div>
-                <p className="text-gray-400">Sign In</p>
-            </div>
+            ) : (
+                <div
+                    className="hidden lg:flex items-center space-x-2 border border-gray-100 p-2 cursor-pointer"
+                    onClick={() => signIn()}
+                >
+                    <div className="relative h-5 w-5 flex-shrink-0">
+                        <Image
+                            src="https://links.papareact.com/23l"
+                            alt=""
+                            layout="fill"
+                        />
+                    </div>
+                    <p className="text-gray-400">Sign In</p>
+                </div>
+            )}
         </div>
     );
 }
